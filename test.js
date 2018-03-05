@@ -2,36 +2,37 @@ var watson = require('watson-developer-cloud');
 var fs = require('fs');
 var Jimp = require("jimp");
 
-/*
-const execSync = require('child_process').execSync;
-const result =  execSync('./CommandCam.exe');
-console.log(result);
-*/
 
+//子プロセスとしてカメラ起動
+const execSync = require('child_process').execSync;
+const result =  execSync('CommandCam.exe');
+
+//カメラで撮った写真をjpgに変換(watsonがbmpに対応していないため)
 Jimp.read("image.bmp", function (err, lenna) {
     if (err) throw err;
-    lenna.resize(256, 256)            // resize 
-         .quality(60)                 // set JPEG quality 
-         .greyscale()                 // set greyscale 
-         .write("image.jpg"); // save 
+      lenna.write("image.jpg"); // save 
 });
 
+//watsonの資格情報
 var visual_recognition = watson.visual_recognition({
   api_key: '8758c0fc3c232c775a7aa3d0873836f150614841',
   version: 'v3',
   version_date: '2016-05-20'
 });
 
+//どの分類樹に渡すか
 let parameters = {
-  classifier_ids: ["sleapjudge_126959574","default"],
+  classifier_ids: ["sleapjudge_126959574"],
   threshold: 0.6
 };
 
+//渡す画像
 var params = {
-  images_file: fs.createReadStream('./image.jpg'),
+  images_file: fs.createReadStream('./test2.jpg'),
   parameters: parameters
 };
 
+//結果出力
 visual_recognition.classify(params, function(err, response) {
   if (err)
     console.log(err);
