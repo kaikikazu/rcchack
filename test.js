@@ -19,12 +19,14 @@ function main(){
         .write("image.jpg"); // save
   });
 
+  /*素材用のモデルデータ収集
   Jimp.read("image.bmp", function (err, lenna) {
       if (err) throw err;
         lenna.resize(256, 256)
         .write(filename); // save
   });
   count++;
+  */
 
   //watsonの資格情報
   var visual_recognition = watson.visual_recognition({
@@ -41,10 +43,11 @@ function main(){
 
   //渡す画像
   var params = {
-    images_file: fs.createReadStream('./image.jpg'),
+    images_file: fs.createReadStream('./sleep.jpg'),
     parameters: parameters
   };
 
+  //写真表示（デバック用）
   const result2 =  execSync('start image.jpg');
 
   //結果出力
@@ -57,6 +60,7 @@ function main(){
       if(response.images[0].classifiers[0].classes[0].class == "sleep"){
         if(response.images[0].classifiers[0].classes[0].score >= 0.5){
           console.log("sleep!!!")
+          const result3 =  execSync('a.exe');
         }
       }
     }
@@ -67,13 +71,10 @@ function main(){
       console.log(JSON.stringify(response, null, 2))
   });
 
-  //var score = response.get("score");
-
   //一定時間ごとに起動するように
-  setTimeout(function(){ 
+  setTimeout(function(){
         main();
-    }, 10000);
-  
+    }, 5000);
 }
 
 /*
