@@ -12,7 +12,8 @@ function main(){
   //カメラで撮った写真をjpgに変換(watsonがbmpに対応していないため)
   Jimp.read("image.bmp", function (err, lenna) {
       if (err) throw err;
-        lenna.write("image.jpg"); // save 
+        lenna.resize(256, 256)
+        .write("image.jpg"); // save 
   });
 
   //watsonの資格情報
@@ -24,7 +25,7 @@ function main(){
 
   //どの分類樹に渡すか
   let parameters = {
-    classifier_ids: ["sleapjudge_126959574"],
+    classifier_ids: ["sleapjudge_126959574","default"],
     threshold: 0.6
   };
 
@@ -45,8 +46,7 @@ function main(){
   //一定時間ごとに起動するように
   setTimeout(function(){ 
         main();
-    }, 1000 0);
-
+    }, 10000);
 }
 
 //curl -X POST -F "images_file=@test.jpg" -F "parameters=@fruit.json" "https://gateway-a.watsonplatform.net/visual-recognition/api/v3/classify?api_key=8758c0fc3c232c775a7aa3d0873836f150614841&version=2016-05-20"
